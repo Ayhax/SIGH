@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventario | Sistema SIAF</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+</head>
+<body>
+
+    <header class="navbar-siaf">
+        <div class="navbar-branding">
+            <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 922" preserveAspectRatio="xMidYMid meet" class="logo-header-sistema">
+                <g transform="translate(0.000000,922.000000) scale(0.100000,-0.100000)" stroke="none">
+                    <path class="blue-active-ring-int" d="M4985 8294 c-357 -22 -622 -70 -913 -165 -298 -97 -529 -204 -781 -362 -599 -375 -1018 -840 -1327 -1472 -150 -306 -255 -644 -303 -980 -47 -320 -49 -641 -6 -972 96 -738 454 -1456 990 -1987 724 -717 1696 -1083 2731 -1026 231 12 316 22 509 61 732 145 1345 474 1856 995 436 445 730 979 848 1539 34 163 57 315 65 435 l6 85 -20 -66 c-39 -132 -156 -408 -226 -532 -112 -197 -185 -304 -329 -482 -44 -55 -96 -127 -115 -160 -106 -189 -270 -404 -445 -584 -233 -240 -464 -411 -740 -546 -193 -95 -294 -135 -464 -184 -334 -96 -486 -116 -866 -116 -259 1 -319 4 -443 23 -249 39 -544 120 -739 203 -402 171 -718 388 -1021 704 -549 571 -860 1397 -813 2156 24 368 106 679 264 999 220 446 557 822 1032 1150 208 143 400 247 647 349 177 72 236 91 415 135 307 75 541 101 823 93 270 -9 486 -44 747 -123 118 -36 355 -140 457 -201 336 -201 748 -592 988 -938 174 -250 295 -526 350 -797 20 -100 23 -142 23 -353 -1 -222 -3 -251 -29 -384 -64 -329 -211 -727 -452 -1221 -78 -160 -217 -425 -267 -509 -26 -44 -16 -37 92 53 410 344 733 774 930 1239 129 302 193 658 171 947 -39 504 -218 995 -528 1450 -422 617 -1050 1100 -1748 1345 -280 99 -492 147 -789 179 -142 15 -470 27 -580 20z"/>
+                    <path class="blue-active-ring" d="M4850 7234 c-572 -52 -1085 -282 -1511 -679 -419 -390 -709 -939 -795 -1505 -8 -52 -18 -166 -24 -253 -64 -1048 510 -2033 1445 -2483 183 -88 284 -124 486 -174 222 -55 376 -73 609 -73 385 0 728 79 1075 248 278 134 477 276 695 495 307 307 517 657 649 1086 135 439 141 1013 15 1452 -196 683 -637 1244 -1244 1581 -256 142 -567 249 -832 286 -108 15 -474 27 -568 19z m444 -199 c607 -71 1148 -366 1539 -840 333 -403 522 -881 557 -1407 28 -407 -65 -848 -260 -1238 -257 -514 -720 -935 -1248 -1136 -320 -121 -551 -160 -892 -151 -284 8 -457 40 -712 131 -163 58 -250 99 -398 186 -421 248 -776 646 -962 1078 -144 336 -208 642 -208 1001 0 351 71 675 218 999 419 921 1397 1490 2366 1377z"/>
+                    <path class="white-center" d="M3738 6115 c-50 -16 -134 -75 -167 -116 -59 -75 -77 -206 -44 -310 21 -65 104 -154 176 -187 l47 -22 0 -278 -1 -277 -52 -24 c-202 -96 -253 -370 -96 -523 79 -77 118 -93 229 -93 81 0 102 4 140 24 86 45 145 110 169 184 l13 37 278 0 279 0 27 -60 c29 -66 86 -125 156 -162 36 -19 58 -23 138 -23 84 0 101 3 145 27 87 48 140 105 164 181 l13 37 278 0 279 0 30 -64 c36 -74 91 -128 167 -163 l54 -24 0 -274 0 -273 -62 -30 c-94 -44 -156 -112 -173 -189 l-7 -33 -283 0 -283 0 -18 52 c-21 65 -88 134 -167 172 -47 23 -70 28 -132 28 -65 0 -85 -4 -140 -31 -75 -37 -140 -105 -164 -171 l-17 -45 -281 -3 -281 -2 -17 49 c-23 69 -83 134 -161 172 -56 28 -76 32 -139 32 -63 0 -83 -4 -139 -32 -130 -64 -193 -172 -184 -315 9 -130 72 -221 195 -278 58 -27 72 -30 136 -26 42 3 92 13 119 26 69 30 142 103 169 168 l23 54 280 0 281 0 19 -51 c22 -63 91 -135 160 -169 72 -34 174 -39 248 -10 79 29 160 104 189 175 l23 55 280 0 281 0 19 -52 c21 -61 91 -134 163 -169 40 -19 64 -24 138 -24 81 0 95 3 143 30 83 45 146 120 167 199 45 167 -23 316 -180 393 l-55 27 0 273 0 272 53 25 c164 78 231 231 178 406 -18 59 -31 81 -70 119 -77 75 -129 96 -236 96 -75 0 -98 -4 -140 -25 -71 -34 -139 -106 -162 -169 l-18 -51 -284 2 -283 3 -20 54 c-23 62 -73 114 -150 156 -48 27 -62 30 -143 30 -73 0 -99 -4 -136 -23 -74 -36 -126 -87 -159 -158 l-31 -64 -277 0 -278 0 -28 66 c-32 72 -93 130 -173 165 l-43 18 0 275 0 275 53 24 c78 37 132 88 166 162 l31 65 274 0 275 0 27 -60 c73 -164 275 -241 430 -165 73 36 147 109 164 161 7 21 17 45 23 52 7 9 76 12 283 12 l274 0 28 -62 c34 -74 90 -129 170 -166 152 -69 343 2 419 156 24 49 28 69 28 142 0 76 -3 93 -33 153 -76 154 -270 219 -427 142 -67 -32 -147 -117 -163 -174 l-13 -41 -285 2 -286 3"/>
+                </g>
+            </svg>
+            <span class="logo-texto-sistema">SIGH</span>
+        </div>
+
+        <div class="modulos-menu-wrapper" id="modulosWrapper">
+            <button class="btn-navbar-modulos" id="btnModulos">
+                <i class="ti ti-apps modulos-icon"></i>
+                <div class="modulos-info-text">
+                    <span class="modulos-label">MÓDULOS</span>
+                    <span class="modulos-actual" id="nombreModuloActual">Inventario</span>
+                </div>
+                <i class="ti ti-chevron-down arrow-modulos"></i>
+            </button>
+            <div id="modulosDropdown" class="modulos-dropdown">
+                <div class="modulos-dropdown-title">MÓDULOS</div>
+                <div id="modulosListado" class="modulos-listado"></div>
+                <a href="home.html" class="modulos-ver-todos">Ver todos</a>
+            </div>
+        </div>
+
+        <div class="user-menu-wrapper" id="userMenuWrapper">
+            <div class="user-profile-nav">
+                <div class="user-meta">
+                    <span class="user-name" id="userNameDisplay">Cargando...</span>
+                    <span class="user-role" id="userRoleDisplay">Usuario</span>
+                </div>
+                <i class="ti ti-chevron-down arrow-user"></i>
+            </div>
+            <div id="userDropdown" class="user-dropdown">
+                <a href="#" onclick="cerrarSesion()"><i class="ti ti-logout"></i> Cerrar Sesión</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="layout-wrapper">
+        
+        <aside class="sidebar">
+            <nav>
+                <div class="menu-header">Menu</div>
+                <ul>
+                    <li><a href="#" class="active"><i class="ti ti-box"></i> Inventario General</a></li>
+                    <li><a href="#"><i class="ti ti-arrows-exchange"></i> Movimientos</a></li>
+                    <li><a href="#"><i class="ti ti-file-analytics"></i> Reportes</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="breadcrumb">Módulos > Inventario > Gestión de Stock</div>
+            
+            <section class="form-filter">
+                <div class="form-group">
+                    <label>Tipo de Producto</label>
+                    <select>
+                        <option>SUMINISTROS</option>
+                        <option>ACTIVOS FIJOS</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descripción del Ítem</label>
+                    <input type="text" placeholder="Buscar...">
+                </div>
+                <button class="btn-red">Generar Consulta</button>
+            </section>
+
+            <section class="results-area">
+                <table class="dense-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Descripción</th>
+                            <th>Stock</th>
+                            <th>Ubicación</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventario-tbody">
+                        <tr>
+                            <td>INV-001</td>
+                            <td>Papel Bond A4</td>
+                            <td>500</td>
+                            <td>Almacén 01</td>
+                            <td><span class="badge">DISPONIBLE</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script src="auth_check.js"></script>
+
+    <script>
+        // --- Catálogo de módulos del sistema ---
+        // OJO: 'nombre' debe coincidir exactamente con lo que el servidor envía en usuarioLogueado.modulos
+        // (ver server.js: GROUP_CONCAT(DISTINCT m.nombre) as modulos_nombres)
+        const CATALOGO_MODULOS = [
+            { nombre: 'SCIL', titulo: 'Inventario',              desc: 'Sistema de Control de Inventario Logístico',      icono: 'ti-boxes',              url: 'inventario.html' },
+            { nombre: 'CAF',  titulo: 'Activos Fijos',           desc: 'Control de Activos Fijos',                        icono: 'ti-building-warehouse', url: 'patrimonio.html' },
+            { nombre: 'SCIP', titulo: 'Control Interno',         desc: 'Sistema de control Interno de Productos',         icono: 'ti-shield-check',       url: 'admin.html' },
+            { nombre: 'GUH',  titulo: 'Gestión de Usuarios',     desc: 'Gestión de Usuarios y Herramientas',              icono: 'ti-users',              url: 'usuario.html' },
+            { nombre: 'CPF',  titulo: 'Prod. Farmacéuticos',     desc: 'Control de Productos Farmacéuticos',              icono: 'ti-vaccine',            url: 'admin.html' },
+            { nombre: 'MR',   titulo: 'Reportes',                desc: 'Módulo de Reportes',                              icono: 'ti-report',             url: 'admin.html' },
+        ];
+
+        // Esta página (inventario.html) corresponde siempre al módulo SCIL
+        const MODULO_ACTUAL = 'SCIL';
+
+        // Usuario logueado (se llena en el DOMContentLoaded de más abajo)
+        let usuarioLogueado = null;
+
+        // Pinta el listado del toggle de módulos usando SOLO los módulos
+        // que vienen en usuarioLogueado.modulos (asignados por su rol en el servidor)
+        function pintarModulosDropdown() {
+            const modulosPermitidos = (usuarioLogueado && usuarioLogueado.modulos) || [];
+            const listado = document.getElementById('modulosListado');
+            const nombreActualSpan = document.getElementById('nombreModuloActual');
+
+            // Etiqueta del módulo actual (esta página)
+            const infoActual = CATALOGO_MODULOS.find(m => m.nombre === MODULO_ACTUAL);
+            nombreActualSpan.textContent = infoActual ? infoActual.titulo : MODULO_ACTUAL;
+
+            // Filtramos el catálogo completo dejando solo los módulos asignados al usuario
+            const modulosAsignados = CATALOGO_MODULOS.filter(m => modulosPermitidos.includes(m.nombre));
+
+            listado.innerHTML = '';
+
+            if (modulosAsignados.length === 0) {
+                listado.innerHTML = '<div class="modulos-vacio">No tienes otros módulos asignados.</div>';
+                return;
+            }
+
+            modulosAsignados.forEach(m => {
+                const esActual = m.nombre === MODULO_ACTUAL;
+                const item = document.createElement(esActual ? 'div' : 'a');
+                if (!esActual) item.href = m.url;
+                item.className = 'modulo-item' + (esActual ? ' activo' : '');
+                item.innerHTML = `
+                    <div class="modulo-icono"><i class="ti ${m.icono}"></i></div>
+                    <div class="modulo-texto">
+                        <span class="modulo-titulo">${m.titulo}</span>
+                        <span class="modulo-desc">${m.desc}</span>
+                    </div>`;
+                listado.appendChild(item);
+            });
+        }
+
+        // Interactividad del dropdown de Perfil de Usuario
+        const userMenuWrapper = document.getElementById('userMenuWrapper');
+        const userDropdown = document.getElementById('userDropdown');
+
+        if (userMenuWrapper) {
+            userMenuWrapper.addEventListener('click', function(event) {
+                event.stopPropagation();
+                userDropdown.classList.toggle('show');
+            });
+        }
+
+        // Interactividad del dropdown de Módulos (Apps Grid)
+        const btnModulos = document.getElementById('btnModulos');
+        const modulosDropdown = document.getElementById('modulosDropdown');
+
+        if (btnModulos) {
+            btnModulos.addEventListener('click', function(event) {
+                event.stopPropagation();
+                modulosDropdown.classList.toggle('show');
+            });
+        }
+
+        // Cierre de menús al hacer clic fuera de ellos
+        document.addEventListener('click', function(event) {
+            if (userDropdown && !userMenuWrapper.contains(event.target)) {
+                userDropdown.classList.remove('show');
+            }
+            if (modulosDropdown && !document.getElementById('modulosWrapper').contains(event.target)) {
+                modulosDropdown.classList.remove('show');
+            }
+        });
+
+        // Función unificada para limpiar el localStorage y redirigir
+        function cerrarSesion() {
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+
+        // Renderizado automático de datos del usuario logueado en tiempo real
+        document.addEventListener('DOMContentLoaded', () => {
+            const datosUsuario = localStorage.getItem('usuario');
+            if (datosUsuario) {
+                try {
+                    usuarioLogueado = JSON.parse(datosUsuario);
+                    // Si tienes campos estructurados como nombres o rol_nombre en tu backend:
+                    if (usuarioLogueado.nombres) {
+                        document.getElementById('userNameDisplay').innerText = `${usuarioLogueado.nombres} ${usuarioLogueado.apellidos || ''}`.trim();
+                    }
+                    if (usuarioLogueado.rol_nombre || usuarioLogueado.role) {
+                        document.getElementById('userRoleDisplay').innerText = usuarioLogueado.rol_nombre || usuarioLogueado.role;
+                    }
+                    // Pintar el toggle de módulos con SOLO los módulos que el usuario tiene asignados
+                    pintarModulosDropdown();
+                } catch (e) {
+                    console.error("Error parseando los datos de sesión en localStorage:", e);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
