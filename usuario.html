@@ -188,7 +188,7 @@
         function obtenerHeadersSeguros() {
             return { 
                 'Content-Type': 'application/json',
-                'x-usuario-id': usuarioLogueado ? usuarioLogueado.usuario_id : ''
+                'Authorization': usuarioLogueado && usuarioLogueado.token ? 'Bearer ' + usuarioLogueado.token : ''
             };
         }
 
@@ -269,16 +269,11 @@
             const userId = document.getElementById('selectUsuarioPermisos').value;
             if (!userId) return alert('Seleccione un usuario primero');
 
-            const usuarioSeleccionado = usuariosData.find(u => u.usuario_id == userId);
-            const rolId = usuarioSeleccionado ? usuarioSeleccionado.rol_id : null;
-
-            if (!rolId) return alert('No se pudo determinar el rol del usuario');
-
             const checkboxes = document.querySelectorAll('.permiso:checked');
             const modulosSeleccionados = Array.from(checkboxes).map(cb => cb.getAttribute('data-modulo-id'));
 
             try {
-                const res = await fetch(`http://localhost:3000/api/roles/${rolId}/permisos`, {
+                const res = await fetch(`http://localhost:3000/api/usuarios/${userId}/permisos`, {
                     method: 'POST',
                     headers: obtenerHeadersSeguros(),
                     body: JSON.stringify({ modulos: modulosSeleccionados })

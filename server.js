@@ -2,6 +2,8 @@ require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 const app = express();
 app.use(cors());
@@ -22,24 +24,37 @@ db.connect((err) => {
 // MIDDLEWARE MANDATORIO DE SEGURIDAD
 function verificarPermiso(moduloId) {
     return (req, res, next) => {
-        const usuarioId = req.headers['x-usuario-id'];
+        // Leemos el token del header Authorization, no un ID que el cliente inventa
+        const authHeader = req.headers['authorization'];
 
-        if (!usuarioId) {
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return res.status(401).json({ success: false, message: "No identificado." });
         }
 
+        const token = authHeader.split(' ')[1];
+        let payload;
+        try {
+            // jwt.verify revisa la firma: si el token fue alterado o no lo generamos
+            // nosotros, esto lanza un error y cae al catch
+            payload = jwt.verify(token, process.env.JWT_SECRET);
+        } catch (err) {
+            return res.status(401).json({ success: false, message: "Sesión inválida o expirada." });
+        }
+
+        const usuarioId = payload.usuario_id;
+
         const sql = `
             SELECT COUNT(*) as permitido 
-            FROM usuario u
-            JOIN rol_modulo_detalle rmd ON u.rol_id = rmd.rol_id
-            WHERE u.usuario_id = ? AND rmd.modulo_id = ?
+            FROM usuario_modulo_detalle umd
+            WHERE umd.usuario_id = ? AND umd.modulo_id = ?
         `;
 
         db.query(sql, [usuarioId, moduloId], (err, results) => {
             if (err) return res.status(500).json({ success: false, error: err.message });
-            
+
             if (results[0].permitido > 0) {
-                next(); 
+                req.usuarioId = usuarioId; // lo dejamos disponible por si la ruta lo necesita
+                next();
             } else {
                 res.status(403).json({ success: false, message: "Acceso Denegado por Servidor." });
             }
@@ -51,20 +66,22 @@ function verificarPermiso(moduloId) {
 app.post('/api/login', (req, res) => {
     const { username, password } = req.body;
 
+    // Ya no comparamos la contraseña dentro del SQL (SHA2 no aplica).
+    // Traemos el hash (u.pass) y comparamos en JavaScript con bcrypt.
     const sql = `
-        SELECT u.usuario_id, u.username, u.dni, u.nombres, u.apellidos, 
+        SELECT u.usuario_id, u.username, u.pass, u.dni, u.nombres, u.apellidos, 
                r.nombre AS nombre_rol, 
-               GROUP_CONCAT(DISTINCT rmd.modulo_id) as modulos_ids,
+               GROUP_CONCAT(DISTINCT umd.modulo_id) as modulos_ids,
                GROUP_CONCAT(DISTINCT m.nombre) as modulos_nombres
         FROM usuario u
         JOIN rol r ON u.rol_id = r.rol_id
-        LEFT JOIN rol_modulo_detalle rmd ON r.rol_id = rmd.rol_id
-        LEFT JOIN modulo m ON rmd.modulo_id = m.modulo_id
-        WHERE u.username = ? AND u.pass = SHA2(?, 256)
+        LEFT JOIN usuario_modulo_detalle umd ON u.usuario_id = umd.usuario_id
+        LEFT JOIN modulo m ON umd.modulo_id = m.modulo_id
+        WHERE u.username = ?
         GROUP BY u.usuario_id;
     `;
 
-    db.query(sql, [username, password], (err, results) => {
+    db.query(sql, [username], async (err, results) => {
         if (err) {
             console.error(err);
             return res.status(500).json({ success: false, message: "Error en servidor" });
@@ -72,21 +89,37 @@ app.post('/api/login', (req, res) => {
         if (results.length === 0) {
             return res.status(401).json({ success: false, message: "El usuario o la contraseña incorrectos." });
         }
-        
+
         const user = results[0];
-        
+
+        // Comparamos la contraseña escrita contra el hash guardado.
+        // bcrypt.compare se encarga de todo (incluyendo el salt), no se compara texto plano.
+        const passwordCorrecta = await bcrypt.compare(password, user.pass);
+        if (!passwordCorrecta) {
+            return res.status(401).json({ success: false, message: "El usuario o la contraseña incorrectos." });
+        }
+
         // Procesamos ambos arrays por separado
         const modulosIds = user.modulos_ids ? user.modulos_ids.split(',').map(Number) : [];
         const modulosNombres = user.modulos_nombres ? user.modulos_nombres.split(',') : [];
-        
-        res.json({ 
-            success: true, 
+
+        // Generamos el token firmado: es la "pulsera VIP" que el usuario va a
+        // presentar en cada petición futura, en vez de mandar su usuario_id "a mano"
+        const token = jwt.sign(
+            { usuario_id: user.usuario_id, username: user.username, role: user.nombre_rol },
+            process.env.JWT_SECRET,
+            { expiresIn: '8h' } // el token deja de ser válido después de 8 horas
+        );
+
+        res.json({
+            success: true,
+            token,
             usuario_id: user.usuario_id,
-            role: user.nombre_rol, 
-            modulos: modulosNombres, // Mantiene los nombres para que home.html pinte los botones
-            modulos_ids: modulosIds,  // Guarda los IDs numéricos para las validaciones de seguridad
-            nombres: user.nombres,   
-            apellidos: user.apellidos 
+            role: user.nombre_rol,
+            modulos: modulosNombres,
+            modulos_ids: modulosIds,
+            nombres: user.nombres,
+            apellidos: user.apellidos
         });
     });
 });
@@ -102,17 +135,28 @@ app.get('/api/roles', verificarPermiso(4), (req, res) => {
 });
 
 app.get('/api/usuarios', verificarPermiso(4), (req, res) => {
-    const sql = `SELECT u.*, r.nombre AS rol_nombre FROM usuario u LEFT JOIN rol r ON u.rol_id = r.rol_id`;
+    // Seleccionamos columnas específicas -- NUNCA u.* -- para no exponer
+    // el hash de la contraseña (u.pass) al frontend.
+    const sql = `
+        SELECT u.usuario_id, u.dni, u.nombres, u.apellidos, u.correo, 
+               u.username, u.telefono, u.rol_id, r.nombre AS rol_nombre 
+        FROM usuario u 
+        LEFT JOIN rol r ON u.rol_id = r.rol_id
+    `;
     db.query(sql, (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(results);
     });
 });
 
-app.post('/api/usuarios', verificarPermiso(4), (req, res) => {
+app.post('/api/usuarios', verificarPermiso(4), async (req, res) => {
     const { dni, nombres, apellidos, correo, username, pass, telefono, rol_id } = req.body;
-    const sql = `INSERT INTO usuario (dni, nombres, apellidos, correo, username, pass, telefono, rol_id) VALUES (?, ?, ?, ?, ?, SHA2(?, 256), ?, ?)`;
-    db.query(sql, [dni, nombres, apellidos, correo, username, pass, telefono, rol_id], (err) => {
+
+    // Generamos el hash bcrypt aquí en JS antes de guardarlo (ya no con SHA2 en SQL)
+    const hashPass = await bcrypt.hash(pass, 10);
+
+    const sql = `INSERT INTO usuario (dni, nombres, apellidos, correo, username, pass, telefono, rol_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    db.query(sql, [dni, nombres, apellidos, correo, username, hashPass, telefono, rol_id], (err) => {
         if (err) return res.status(500).json({ success: false });
         res.json({ success: true });
     });
@@ -122,9 +166,14 @@ app.post('/api/usuarios', verificarPermiso(4), (req, res) => {
 // (no es información sensible). El filtrado de qué módulos puede VER cada quien
 // se hace en el frontend, cruzando contra su propio usuarioLogueado.modulos.
 app.get('/api/modulos', (req, res) => {
-    const usuarioId = req.headers['x-usuario-id'];
-    if (!usuarioId) {
+    const authHeader = req.headers['authorization'];
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({ success: false, message: "No identificado." });
+    }
+    try {
+        jwt.verify(authHeader.split(' ')[1], process.env.JWT_SECRET);
+    } catch (err) {
+        return res.status(401).json({ success: false, message: "Sesión inválida o expirada." });
     }
     db.query('SELECT modulo_id AS id, nombre, descripcion FROM modulo', (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
@@ -133,21 +182,22 @@ app.get('/api/modulos', (req, res) => {
 });
 
 app.get('/api/usuarios/:id/permisos', verificarPermiso(4), (req, res) => {
-    const sql = `SELECT rmd.modulo_id FROM usuario u JOIN rol_modulo_detalle rmd ON u.rol_id = rmd.rol_id WHERE u.usuario_id = ?`;
+    const sql = `SELECT modulo_id FROM usuario_modulo_detalle WHERE usuario_id = ?`;
     db.query(sql, [req.params.id], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(results.map(row => row.modulo_id));
     });
 });
 
-app.post('/api/roles/:rolId/permisos', verificarPermiso(4), (req, res) => {
-    const { rolId } = req.params;
+// Asignación de permisos AHORA por usuario individual (ya no por rol)
+app.post('/api/usuarios/:usuarioId/permisos', verificarPermiso(4), (req, res) => {
+    const { usuarioId } = req.params;
     const { modulos } = req.body;
-    db.query('DELETE FROM rol_modulo_detalle WHERE rol_id = ?', [rolId], (err) => {
+    db.query('DELETE FROM usuario_modulo_detalle WHERE usuario_id = ?', [usuarioId], (err) => {
         if (err) return res.status(500).json({ success: false });
         if (!modulos || modulos.length === 0) return res.json({ success: true });
-        const values = modulos.map(mId => [rolId, mId]);
-        db.query('INSERT INTO rol_modulo_detalle (rol_id, modulo_id) VALUES ?', [values], (err) => {
+        const values = modulos.map(mId => [usuarioId, mId]);
+        db.query('INSERT INTO usuario_modulo_detalle (usuario_id, modulo_id) VALUES ?', [values], (err) => {
             if (err) return res.status(500).json({ success: false });
             res.json({ success: true });
         });
