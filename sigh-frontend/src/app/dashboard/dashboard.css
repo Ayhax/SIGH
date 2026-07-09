@@ -1,0 +1,228 @@
+/* ===================================================
+   DASHBOARD — adaptado de style.css (proyecto vanilla)
+   Usa las variables globales definidas en styles.css:
+   --primary-blue, --sidebar-gray, --bg-light, --text-dark,
+   --blue-dark, --blue-ligth, --blue-active, --blue-hover,
+   --red-error-fondo, --red-error
+   =================================================== */
+
+/* --- Contenedor raíz (equivalente a body.scrollable) --- */
+.scrollable {
+    overflow-y: auto;
+    height: 100%;
+}
+
+/* ============ NAVBAR ============ */
+.navbar-siaf {
+    background-color: var(--primary-blue);
+    color: white;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    height: 55px;
+}
+
+/* El logo ahora vive en su propio componente: src/app/logo/ (logo.ts, logo.html, logo.css) */
+
+.system-title-siaf {
+    font-size: 25px;
+    font-weight: 900;
+    color: #fff;
+}
+
+.system-subtitle-siaf {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--blue-ligth);
+    margin-left: 4px;
+}
+
+/* ============ MENÚ DE USUARIO (perfil + dropdown) ============ */
+.user-menu-wrapper {
+    position: relative;
+    cursor: pointer;
+    margin-left: auto;
+    z-index: 999;
+}
+
+.user-profile-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 6px 4px;
+}
+
+.user-avatar-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.user-meta-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.15;
+}
+
+.user-name-text {
+    font-weight: bold;
+    font-size: 0.85rem;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.user-role-text {
+    font-weight: normal;
+    font-size: 0.72rem;
+    color: #d9e6f5;
+}
+
+.arrow-icon {
+    font-size: 0.75rem;
+    color: #fff;
+    transition: transform 0.2s ease;
+}
+
+.user-menu-wrapper:has(.dropdown-siaf-menu) .arrow-icon {
+    transform: rotate(180deg);
+}
+
+.dropdown-siaf-menu {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background: white;
+    width: 200px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    color: #333;
+}
+
+.dropdown-siaf-item {
+    color: #333;
+    text-decoration: none;
+    padding: 10px 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.dropdown-siaf-item:hover {
+    background-color: #f4f8fd;
+}
+
+.text-danger {
+    color: var(--red-error);
+}
+
+/* ============ CONTENIDO PRINCIPAL ============ */
+.main-container {
+    padding: 40px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.welcome-heading {
+    font-size: 24px;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.welcome-subtitle {
+    color: #777;
+    font-size: 0.95rem;
+    margin: 0 0 24px 0;
+    text-align: center;
+}
+
+/* ============ GRID DE MÓDULOS ============ */
+.grid-modulos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* aqui cambiar si necesitamos mas modulos */
+    gap: 24px;
+    padding: 16px 0;
+}
+
+.card-modulo {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: center;
+    padding: 28px 20px 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card-modulo:hover {
+    transform: translateY(-5px);
+    box-shadow: inset 0 0 0 1px var(--primary-blue), 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-modulo-icon-wrapper {
+    font-size: 32px;
+    color: var(--primary-blue);
+    margin-bottom: 12px;
+    transition: color 0.2s ease;
+}
+
+.card-modulo:hover .card-modulo-icon-wrapper {
+    color: var(--blue-hover);
+}
+
+.card-modulo-content h3 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    color: var(--primary-blue);
+    transition: color 0.2s ease, font-size 0.2s ease;
+}
+
+.card-modulo:hover .card-modulo-content h3 {
+    color: var(--blue-hover);
+    font-size: 18px;
+}
+
+.card-modulo-content p {
+    margin: 0;
+    font-size: 13px;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* ============ ESTADO VACÍO (sin módulos asignados) ============ */
+.estado-vacio {
+    text-align: center;
+    background: #fff;
+    border: 1px dashed #ccc;
+    border-radius: 8px;
+    padding: 40px 20px;
+    color: #666;
+    max-width: 500px;
+    margin: 20px auto 0;
+}
+
+.estado-vacio i {
+    font-size: 48px;
+    color: var(--red-error);
+    margin-bottom: 12px;
+    display: block;
+}

@@ -1,4 +1,56 @@
-/* You ca/* --- Variables y Reset --- */
+/* VARIABLES GLOBALES */
+
+/* --- Variables y Reset --- */
+:root {
+    --primary-blue: #4A80BF;
+    --sidebar-gray: #232B38;
+    --bg-light: #f4f7f6;
+    --text-dark: #333;
+    --blue-dark: #03448b;
+    --blue-ligth: #B5D4F4;
+    --blue-active: #34455C;
+    --blue-hover: #2C3646;
+    --red-error-fondo: #ffd6d7;
+    --red-error: #ff0004;
+}
+
+body, html { 
+    margin: 0; padding: 0; height: 100%; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background-size: cover; overflow: hidden;
+}
+
+/* --- Layout Base (Usado en toda la SPA) --- */
+.main-wrapper { display: flex; height: 100vh; }
+.content-wrapper { flex: 1; padding: 20px; overflow-y: auto; background-color: var(--bg-light); }
+
+/* --- Componentes Utilitarios Globales --- */
+.form-group { margin-bottom: 20px; display: flex; flex-direction: column; }
+.form-group label { font-size: 11px; margin-bottom: 6px; color: #8a93a3; font-weight: 600; text-transform: uppercase; }
+.form-group input, .form-group select { padding: 10px 12px; border: 1px solid #dde1e6; border-radius: 8px; width: 100%; box-sizing: border-box; }
+.form-group input:focus { outline: none; border-color: var(--primary-blue); box-shadow: 0 0 0 3px rgba(74, 128, 191, 0.15); }
+
+.btn-blue { background-color: var(--primary-blue); color: white; border: none; padding: 10px 32px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+.btn-blue:hover { background-color: var(--blue-active); }
+
+.btn-red { background-color: #c0392b; color: white; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; }
+
+.badge { display: inline-block; font-size: 0.75rem; padding: 3px 10px; border-radius: 999px; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 :root {
     --primary-blue: #4A80BF;
     --sidebar-gray: #232B38;
@@ -976,4 +1028,22 @@ h1 {
     border-radius: 999px;
     background-color: #dff5e1;
     color: #1f8a3d;
+}
+
+
+/* Asegúrate de que esto esté en tu src/styles.css */
+.main-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar-siaf {
+  width: 250px;
+  background-color: var(--sidebar-gray); /* Usando tu variable original */
+}
+
+.content-wrapper {
+  flex: 1;
+  padding: 20px;
+  background-color: #f4f7f6; /* O el color de fondo que uses en tu ERP */
 }

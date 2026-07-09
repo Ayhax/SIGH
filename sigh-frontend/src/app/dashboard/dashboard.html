@@ -1,0 +1,52 @@
+<div class="scrollable">
+    <header class="navbar-siaf">
+        <div class="navbar-branding">
+            <app-logo></app-logo>
+        </div>
+
+        <div class="user-menu-wrapper">
+            <div class="user-profile-trigger" (click)="toggleMenu()">
+                <div class="user-avatar-circle">
+                    {{ nombreUsuario().charAt(0).toUpperCase() }}
+                </div>
+                <div class="user-meta-info">
+                    <span class="user-name-text">{{ nombreUsuario() }}</span>
+                    <span class="user-role-text">{{ rolUsuario() }}</span>
+                </div>
+                <i class="ti ti-chevron-down arrow-icon"></i>
+            </div>
+
+            @if (menuAbierto()) {
+                <div class="dropdown-siaf-menu show">
+                    <a class="dropdown-siaf-item text-danger" (click)="cerrarSesion()">
+                        <i class="ti ti-logout"></i> Cerrar Sesión
+                    </a>
+                </div>
+            }
+        </div>
+    </header>
+
+    <main class="main-container">
+        <h2 class="welcome-heading">Módulos del Sistema</h2>
+        <p class="welcome-subtitle">Seleccione el módulo al que desea ingresar:</p>
+
+        <div class="grid-modulos">
+            @for (modulo of modulosVisibles(); track modulo.id) {
+            <div class="card-modulo" (click)="navegarA(modulo.url)">
+                <div class="card-modulo-content">
+                    <h3>{{ modulo.nombre }}</h3>
+                    <p>{{ modulo.descripcion }}</p>
+                </div>
+    </div>
+}
+        </div>
+
+        @if (modulosVisibles().length === 0) {
+            <div class="estado-vacio">
+                <i class="ti ti-shield-alert"></i>
+                <h3>Sin módulos asignados</h3>
+                <p>Tu usuario no cuenta con permisos de acceso configurados. Contacta al administrador del sistema.</p>
+            </div>
+        }
+    </main>
+</div>

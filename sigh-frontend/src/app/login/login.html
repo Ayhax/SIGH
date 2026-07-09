@@ -1,0 +1,22 @@
+<div class="login-container">
+    <form (ngSubmit)="onLogin()" class="login-card" novalidate>
+        <h2 class="title">Inicio de Sesión</h2>
+        
+        <div class="form-group">
+            <label>Usuario</label>
+            <input type="text" name="username" [(ngModel)]="usuario" required>
+        </div>
+        
+        <div class="form-group">
+            <label>Contraseña</label>
+            <input type="password" name="password" [(ngModel)]="contrasena"  required>
+        </div>
+        
+        <button type="submit" class="btn-login">Iniciar sesión</button>
+        <div class="error" [class.show]="errorMsg">{{ errorMsg }}</div>
+    </form>
+
+    <footer class="footer">
+        © 2026 Ayhax. Todos los derechos reservados.
+    </footer>
+</div>
