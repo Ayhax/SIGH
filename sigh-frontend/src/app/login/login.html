@@ -9,10 +9,12 @@
         
         <div class="form-group">
             <label>Contraseña</label>
-            <input type="password" name="password" [(ngModel)]="contrasena"  required>
+            <input type="password" name="password" [(ngModel)]="contrasena" required>
         </div>
         
-        <button type="submit" class="btn-login">Iniciar sesión</button>
+        <button type="submit" class="btn-login" [disabled]="cargando">
+            {{ cargando ? 'Ingresando...' : 'Iniciar sesión' }}
+        </button>
         <div class="error" [class.show]="errorMsg">{{ errorMsg }}</div>
     </form>
 

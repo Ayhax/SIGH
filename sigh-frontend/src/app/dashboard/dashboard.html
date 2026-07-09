@@ -1,8 +1,6 @@
 <div class="scrollable">
     <header class="navbar-siaf">
-        <div class="navbar-branding">
-            <app-logo></app-logo>
-        </div>
+        <app-logo></app-logo>
 
         <div class="user-menu-wrapper">
             <div class="user-profile-trigger" (click)="toggleMenu()">
@@ -32,13 +30,13 @@
 
         <div class="grid-modulos">
             @for (modulo of modulosVisibles(); track modulo.id) {
-            <div class="card-modulo" (click)="navegarA(modulo.url)">
-                <div class="card-modulo-content">
-                    <h3>{{ modulo.nombre }}</h3>
-                    <p>{{ modulo.descripcion }}</p>
+                <div class="card-modulo" (click)="navegarA(modulo.url)">
+                    <div class="card-modulo-content">
+                        <h3>{{ modulo.nombre }}</h3>
+                        <p>{{ modulo.descripcion }}</p>
+                    </div>
                 </div>
-    </div>
-}
+            }
         </div>
 
         @if (modulosVisibles().length === 0) {

@@ -1,8 +1,12 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { Logo } from '../logo/logo'; 
+import { Logo } from '../logo/logo';
+import { AuthService } from '../auth/auth';
+import { environment } from '../../environments/environment';
 
+// Catálogo de presentación: SOLO ruta de navegación.
+// Qué módulos existen y quién los puede ver sigue viniendo de la BD (/api/modulos).
 const PRESENTACION_MODULOS: Record<string, { url: string }> = {
   SCIL: { url: '/inventario' },
   CAF:  { url: '/patrimonio' },
@@ -22,28 +26,29 @@ const PRESENTACION_DEFAULT = { url: '/admin' };
 })
 export class Dashboard implements OnInit {
   private router = inject(Router);
+  private elementRef = inject(ElementRef);
+  private authService = inject(AuthService);
 
   modulosVisibles = signal<any[]>([]);
-  nombreUsuario = signal('');
-  rolUsuario = signal('');
   menuAbierto = signal(false);
 
-  ngOnInit(): void {
-    const datosSesion = localStorage.getItem('usuario');
-    if (!datosSesion) {
-      this.router.navigate(['/login']);
-      return;
-    }
+  // computed() en vez de un valor fijo: si el usuario del AuthService cambia,
+  // esto se recalcula solo, sin que el componente tenga que hacer nada.
+  nombreUsuario = computed(() => this.authService.nombreCompleto());
+  rolUsuario = computed(() => this.authService.usuario()?.role || '');
 
-    const usuario = JSON.parse(datosSesion);
-    this.nombreUsuario.set(`${usuario.nombres || ''} ${usuario.apellidos || ''}`.trim());
-    this.rolUsuario.set(usuario.role || '');
-    this.cargarModulos(usuario);
+  ngOnInit(): void {
+    // El authGuard en las rutas ya garantiza que solo se llega aquí con sesión activa,
+    // así que ya no hace falta el chequeo manual de localStorage + redirect.
+    this.cargarModulos();
   }
 
-  private cargarModulos(usuario: any): void {
-    fetch('http://localhost:3000/api/modulos', {
-      headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+  private cargarModulos(): void {
+    const usuario = this.authService.usuario();
+    if (!usuario) return;
+
+    fetch(`${environment.apiUrl}/api/modulos`, {
+      headers: { ...this.authService.authHeader() }
     })
       .then(res => {
         if (!res.ok) throw new Error('Error en la respuesta del servidor');
@@ -71,7 +76,14 @@ export class Dashboard implements OnInit {
   }
 
   cerrarSesion(): void {
-    localStorage.clear();
+    this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (this.menuAbierto() && !this.elementRef.nativeElement.contains(event.target)) {
+      this.menuAbierto.set(false);
+    }
   }
 }
